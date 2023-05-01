@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Line : MonoBehaviour
+public class Path : MonoBehaviour
 {
     private const float DRAWING_STEP = 0.1f;
 
@@ -19,8 +19,15 @@ public class Line : MonoBehaviour
         return Vector2.Distance(_lineRenderer.GetPosition(_lineRenderer.positionCount - 1), pathPointPosition) > DRAWING_STEP;
     } 
 
-    public void SetColor(Color color)
+    public void SetColor(PathColor pathColor)
     {
+        Color color = pathColor switch
+        {
+            PathColor.Blue => Color.blue,
+            PathColor.Red => Color.red,
+            _ => Color.blue,
+        };
+
         _lineRenderer.startColor = _lineRenderer.endColor = color;
     }
 
