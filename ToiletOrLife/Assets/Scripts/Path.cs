@@ -5,6 +5,7 @@ public class Path : MonoBehaviour
     private const float DRAWING_STEP = 0.1f;
 
     private LineRenderer _lineRenderer;
+    private int _pointer = 0;
 
     private void Awake()
     {
@@ -40,12 +41,21 @@ public class Path : MonoBehaviour
         _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, pathPointPosition);
     }
 
-    public Vector3[] GetPath()
+    public bool GetPathPoint(ref Vector3 pathPoint)
     {
-        Vector3[] path = new Vector3[_lineRenderer.positionCount];
+        if (_pointer == _lineRenderer.positionCount)
+        {
+            return false;
+        }
+        else
+        {
+            pathPoint = _lineRenderer.GetPosition(_pointer);
+            return true;
+        }
+    }
 
-        _lineRenderer.GetPositions(path);
-
-        return path;
+    public void GetNextPathPoint()
+    {
+        _pointer++;
     }
 }

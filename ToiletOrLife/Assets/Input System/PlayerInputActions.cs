@@ -35,6 +35,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TestMove"",
+                    ""type"": ""Button"",
+                    ""id"": ""f4f47653-95ad-4b35-a7f1-c30c77103e58"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -59,6 +68,28 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""DrawPath"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0f7e35b2-4a4e-4253-9c66-0bbbaaeb40c9"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""db6b0c4f-7b08-48a5-b3dd-1c8912d7d748"",
+                    ""path"": ""<Touchscreen>/touch0/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TestMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -68,6 +99,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_DrawPath = m_Player.FindAction("DrawPath", throwIfNotFound: true);
+        m_Player_TestMove = m_Player.FindAction("TestMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -130,11 +162,13 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_DrawPath;
+    private readonly InputAction m_Player_TestMove;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @DrawPath => m_Wrapper.m_Player_DrawPath;
+        public InputAction @TestMove => m_Wrapper.m_Player_TestMove;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -147,6 +181,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DrawPath.started += instance.OnDrawPath;
             @DrawPath.performed += instance.OnDrawPath;
             @DrawPath.canceled += instance.OnDrawPath;
+            @TestMove.started += instance.OnTestMove;
+            @TestMove.performed += instance.OnTestMove;
+            @TestMove.canceled += instance.OnTestMove;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -154,6 +191,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @DrawPath.started -= instance.OnDrawPath;
             @DrawPath.performed -= instance.OnDrawPath;
             @DrawPath.canceled -= instance.OnDrawPath;
+            @TestMove.started -= instance.OnTestMove;
+            @TestMove.performed -= instance.OnTestMove;
+            @TestMove.canceled -= instance.OnTestMove;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -174,5 +214,6 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnDrawPath(InputAction.CallbackContext context);
+        void OnTestMove(InputAction.CallbackContext context);
     }
 }

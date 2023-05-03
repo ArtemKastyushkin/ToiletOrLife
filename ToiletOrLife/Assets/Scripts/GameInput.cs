@@ -10,6 +10,8 @@ public class GameInput : MonoBehaviour
     public event EventHandler OnDrawingStarted;
     public event EventHandler OnDrawingFinished;
 
+    public event EventHandler OnTestMoved;
+
     private void Awake()
     {
         Instance = this;
@@ -19,6 +21,13 @@ public class GameInput : MonoBehaviour
 
         _playerInputActions.Player.DrawPath.performed += DrawPath_performed;
         _playerInputActions.Player.DrawPath.canceled += DrawPath_canceled;
+
+        _playerInputActions.Player.TestMove.performed += TestMove_performed;
+    }
+
+    private void TestMove_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnTestMoved?.Invoke(this, EventArgs.Empty);
     }
 
     private void DrawPath_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)

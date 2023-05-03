@@ -4,46 +4,45 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private Path _pathPrefab;
     [SerializeField] private PathColor _pathColor;
+    [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private Path _path;
-    private Vector3[] _pathPoints;
-    private int _pointer = 0;
     private float _speed = 2.0f;
 
-    public bool IsDrawingFinished { get; private set; }
-
-    private bool _startMoving = false;
+    private bool _isDrawing = false;
+    private bool _isMoving = false;
 
     private void Start()
     {
-        IsDrawingFinished = true;
-
         GameInput.Instance.OnDrawingStarted += GameInput_OnDrawingStarted;
         GameInput.Instance.OnDrawingFinished += GameInput_OnDrawingFinished;
+
+        GameInput.Instance.OnTestMoved += GameInput_OnTestMoved;
+    }
+
+    private void GameInput_OnTestMoved(object sender, System.EventArgs e)
+    {
+        if (_path != null)
+            ChangeMovingState();
     }
 
     private void GameInput_OnDrawingStarted(object sender, System.EventArgs e)
     {
-        if (_path == null)
-            IsDrawingFinished = false;
+        if (_path == null && IsChoosen())
+            ChangeDrawingState();
     }
 
     private void GameInput_OnDrawingFinished(object sender, System.EventArgs e)
     {
-        IsDrawingFinished = true;
-
-        _pathPoints = _path.GetPath();
+        _isDrawing = false;
     }
 
     private void Update()
     {
-        if (IsDrawingFinished == false)
+        if (_isDrawing)
             DrawPath();
 
-        if (Input.GetMouseButtonDown(1))
-            StartMoving();
-
-        if (_startMoving)
+        if (_isMoving)
             Move();
     }
 
@@ -53,14 +52,17 @@ public class Player : MonoBehaviour
         GameInput.Instance.OnDrawingFinished -= GameInput_OnDrawingFinished;
     }
 
-    private Vector2 GetMousePosition()
+    private bool IsChoosen()
     {
-        return Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector2 pointerPosition = Pointer.GetPosition();
+
+        return pointerPosition.x >= _spriteRenderer.bounds.min.x && pointerPosition.x <= _spriteRenderer.bounds.max.x 
+            && pointerPosition.y >= _spriteRenderer.bounds.min.y && pointerPosition.y <= _spriteRenderer.bounds.max.y;
     }
 
     private void DrawPath()
     {
-        Vector2 pathPointPosition = GetMousePosition();
+        Vector2 pathPointPosition = Pointer.GetPosition();
 
         if (_path == null)
         {
@@ -73,22 +75,30 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void StartMoving()
-    {
-        _startMoving = true;
-    }
-
     private void Move()
     {
-        if (_pointer >= _pathPoints.Length)
+        Vector3 pathPoint = Vector3.zero;
+
+        if (_path.GetPathPoint(ref pathPoint))
         {
-            _startMoving = false;
-            return;
+            transform.position = Vector2.MoveTowards(transform.position, pathPoint, Time.deltaTime * _speed);
+
+            if (transform.position == pathPoint)
+                _path.GetNextPathPoint();
         }
+        else
+        {
+            ChangeMovingState();
+        }
+    }
 
-        transform.position = Vector2.MoveTowards(transform.position, _pathPoints[_pointer], Time.deltaTime * _speed);
+    private void ChangeDrawingState()
+    {
+        _isDrawing = !_isDrawing;
+    }
 
-        if (transform.position == _pathPoints[_pointer])
-            _pointer++;
+    private void ChangeMovingState()
+    {
+        _isMoving = !_isMoving;
     }
 }
