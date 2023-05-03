@@ -39,4 +39,13 @@ public class Path : MonoBehaviour
         _lineRenderer.positionCount++;
         _lineRenderer.SetPosition(_lineRenderer.positionCount - 1, pathPointPosition);
     }
+
+    public Vector3[] GetPath()
+    {
+        Vector3[] path = new Vector3[_lineRenderer.positionCount];
+
+        _lineRenderer.GetPositions(path);
+
+        return path;
+    }
 }

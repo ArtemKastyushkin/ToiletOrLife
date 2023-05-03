@@ -6,8 +6,13 @@ public class Player : MonoBehaviour
     [SerializeField] private PathColor _pathColor;
 
     private Path _path;
+    private Vector3[] _pathPoints;
+    private int _pointer = 0;
+    private float _speed = 2.0f;
 
     public bool IsDrawingFinished { get; private set; }
+
+    private bool _startMoving = false;
 
     private void Start()
     {
@@ -26,12 +31,26 @@ public class Player : MonoBehaviour
     private void GameInput_OnDrawingFinished(object sender, System.EventArgs e)
     {
         IsDrawingFinished = true;
+
+        _pathPoints = _path.GetPath();
     }
 
     private void Update()
     {
         if (IsDrawingFinished == false)
             DrawPath();
+
+        if (Input.GetMouseButtonDown(1))
+            StartMoving();
+
+        if (_startMoving)
+            Move();
+    }
+
+    private void OnDestroy()
+    {
+        GameInput.Instance.OnDrawingStarted -= GameInput_OnDrawingStarted;
+        GameInput.Instance.OnDrawingFinished -= GameInput_OnDrawingFinished;
     }
 
     private Vector2 GetMousePosition()
@@ -54,9 +73,22 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void StartMoving()
     {
-        GameInput.Instance.OnDrawingStarted -= GameInput_OnDrawingStarted;
-        GameInput.Instance.OnDrawingFinished -= GameInput_OnDrawingFinished;
+        _startMoving = true;
+    }
+
+    private void Move()
+    {
+        if (_pointer >= _pathPoints.Length)
+        {
+            _startMoving = false;
+            return;
+        }
+
+        transform.position = Vector2.MoveTowards(transform.position, _pathPoints[_pointer], Time.deltaTime * _speed);
+
+        if (transform.position == _pathPoints[_pointer])
+            _pointer++;
     }
 }
