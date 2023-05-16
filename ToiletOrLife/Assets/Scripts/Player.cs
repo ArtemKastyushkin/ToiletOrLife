@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,34 +8,60 @@ public class Player : MonoBehaviour
     [SerializeField] private SpriteRenderer _spriteRenderer;
 
     private Path _path;
-    private float _speed = 2.0f;
+
+    private Vector2 _currentPathPoint = Vector2.zero;
+
+    private float _pathLength = 0.0f;
+    private float _speed = 3.0f;
 
     private bool _isDrawing = false;
     private bool _isMoving = false;
+
+    public static event EventHandler OnPlayerCreated;
+
+    public static event EventHandler<OnPathCreatedEventArgs> OnPathCreated;
+    public class OnPathCreatedEventArgs : EventArgs
+    {
+        public float PathLength;
+    }
 
     private void Start()
     {
         GameInput.Instance.OnDrawingStarted += GameInput_OnDrawingStarted;
         GameInput.Instance.OnDrawingFinished += GameInput_OnDrawingFinished;
 
-        GameInput.Instance.OnTestMoved += GameInput_OnTestMoved;
-    }
+        OnPlayerCreated?.Invoke(this, EventArgs.Empty);
 
-    private void GameInput_OnTestMoved(object sender, System.EventArgs e)
-    {
-        if (_path != null)
-            ChangeMovingState();
+        GameManager.Instance.OnAllPathsCreated += GameManager_OnAllPathsCreated; ;
     }
 
     private void GameInput_OnDrawingStarted(object sender, System.EventArgs e)
     {
         if (_path == null && IsChoosen())
-            ChangeDrawingState();
+            _isDrawing = true;
     }
 
     private void GameInput_OnDrawingFinished(object sender, System.EventArgs e)
     {
-        _isDrawing = false;
+        if (_isDrawing)
+        {
+            _isDrawing = false;
+
+            _pathLength = _path.CalculatePathLength(transform.position);
+
+            OnPathCreated?.Invoke(this, new OnPathCreatedEventArgs
+            {
+                PathLength = _pathLength
+            });
+        }
+    }
+
+    private void GameManager_OnAllPathsCreated(object sender, GameManager.OnAllPathsCreatedEventArgs e)
+    {
+        _isMoving = true;
+
+        SetMovingSpeed(e.MinPathLength);
+        SetNextPathPoint();
     }
 
     private void Update()
@@ -75,30 +102,35 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void SetNextPathPoint()
+    {
+        if (_path.GetPathPoint(ref _currentPathPoint) == false)
+            _isMoving = false;
+    }
+
     private void Move()
     {
-        Vector3 pathPoint = Vector3.zero;
+        float speed = _speed * Time.deltaTime;
+        float distance = Vector2.Distance(transform.position, _currentPathPoint);
 
-        if (_path.GetPathPoint(ref pathPoint))
-        {
-            transform.position = Vector2.MoveTowards(transform.position, pathPoint, Time.deltaTime * _speed);
+        transform.position = Vector2.MoveTowards(transform.position, _currentPathPoint, speed);
 
-            if (transform.position == pathPoint)
-                _path.GetNextPathPoint();
-        }
-        else
+        if ((Vector2)transform.position == _currentPathPoint)
         {
-            ChangeMovingState();
+            while (speed > distance && _isMoving)
+            {
+                SetNextPathPoint();
+
+                speed -= distance;
+                distance = Vector2.Distance(transform.position, _currentPathPoint);
+
+                transform.position = Vector2.MoveTowards(transform.position, _currentPathPoint, speed);
+            }
         }
     }
 
-    private void ChangeDrawingState()
+    private void SetMovingSpeed(float minPathLength)
     {
-        _isDrawing = !_isDrawing;
-    }
-
-    private void ChangeMovingState()
-    {
-        _isMoving = !_isMoving;
+        _speed *= _pathLength / minPathLength;
     }
 }

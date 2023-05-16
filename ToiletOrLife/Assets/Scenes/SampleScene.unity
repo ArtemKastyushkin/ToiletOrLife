@@ -123,6 +123,50 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &163715383
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 163715384}
+  - component: {fileID: 163715385}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &163715384
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163715383}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &163715385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 163715383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfe6893d9c68b694290228ef12275492, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,11 +251,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &749525293 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3278819596438353841, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-  m_PrefabInstance: {fileID: 873836083}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &760088086
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,13 +307,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1089695130911813524, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-      propertyPath: _spriteRenderer
+      propertyPath: _gameManager
       value: 
-      objectReference: {fileID: 749525293}
-    - target: {fileID: 3278819596438353841, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 163715385}
     - target: {fileID: 4941557014026819932, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -325,11 +360,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
---- !u!212 &1877528326 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3278819596438353841, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-  m_PrefabInstance: {fileID: 4536550049148836287}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4536550049148836287
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -338,24 +368,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1089695130911813524, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-      propertyPath: _pathColor
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1089695130911813524, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-      propertyPath: _spriteRenderer
+      propertyPath: _gameManager
       value: 
-      objectReference: {fileID: 1877528326}
-    - target: {fileID: 3278819596438353841, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
-      propertyPath: m_SortingOrder
-      value: 1
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 163715385}
     - target: {fileID: 4941557014026819932, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4941557014026819932, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2
+      value: -1.25
       objectReference: {fileID: 0}
     - target: {fileID: 4941557014026819932, guid: 28fda65fd0c6c4d4683f3a576103b2aa, type: 3}
       propertyPath: m_LocalPosition.y
